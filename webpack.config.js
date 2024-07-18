@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+const path = require('path');
+const TerserPlugin = require('terser-webpack-plugin');
+
 module.exports = (options, webpack) => {
   const lazyImports = [
     '@nestjs/microservices/microservices-module',
@@ -6,8 +10,14 @@ module.exports = (options, webpack) => {
 
   return {
     ...options,
+    target: 'node20',
     optimization: {
       minimize: true,
+      minimizer: [
+        new TerserPlugin({
+          extractComments: false,
+        }),
+      ],
     },
     externals: [],
     plugins: [
@@ -25,5 +35,10 @@ module.exports = (options, webpack) => {
         },
       }),
     ],
+    output: {
+      ...options.output,
+      filename: 'db-handler.js',
+      path: path.resolve(__dirname, 'pg-db-service/prod/handlers'),
+    },
   };
 };
