@@ -5,6 +5,7 @@ import {
   Post,
   UseGuards,
   HttpStatus,
+  Body,
 } from '@nestjs/common';
 import {
   LocalAuthGuard,
@@ -12,6 +13,7 @@ import {
   JwtAuthGuard,
   BasicAuthGuard,
 } from './auth';
+import { User, UserWithoutId } from './users';
 
 @Controller()
 export class AppController {
@@ -25,7 +27,7 @@ export class AppController {
     };
   }
 
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(BasicAuthGuard)
   @Post('api/auth/login')
   async login(@Request() req) {
     const token = this.authService.login(req.user, 'basic');
@@ -38,6 +40,20 @@ export class AppController {
       },
     };
   }
+
+  // @Post('api/auth/register')
+  // async register(@Body() user: UserWithoutId) {
+  //   const newUser = this.authService.validateUser(user.name, user.password);
+  //   const token = this.authService.login(newUser, 'basic');
+  //
+  //   return {
+  //     statusCode: HttpStatus.OK,
+  //     message: 'OK',
+  //     data: {
+  //       ...token,
+  //     },
+  //   };
+  // }
 
   @UseGuards(BasicAuthGuard)
   @Get('api/profile')
