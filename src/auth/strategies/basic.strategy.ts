@@ -18,8 +18,8 @@ export class BasicStrategy extends PassportStrategy(Strategy) {
       throw new UnauthorizedException();
     }
 
-    const { password, ...result } = user;
+    // const { password, ...result } = user;
 
-    return result;
+    return user;
   }
 }
