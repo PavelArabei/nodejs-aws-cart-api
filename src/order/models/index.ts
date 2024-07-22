@@ -1,5 +1,10 @@
 import { CartItem } from '../../cart/models';
 
+export enum OrderStatuses {
+  CREATED = 'CREATED',
+  SHIPPED = 'SHIPPED',
+}
+
 export type Order = {
   id?: string;
   userId: string;
@@ -15,6 +20,6 @@ export type Order = {
     address: any;
   };
   comments: string;
-  status: string;
+  status: OrderStatuses;
   total: number;
 };

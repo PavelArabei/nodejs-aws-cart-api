@@ -1,6 +1,6 @@
 export enum CartStatuses {
   OPEN = 'OPEN',
-  STATUS = 'STATUS',
+  ORDERED = 'ORDERED',
 }
 
 export type Product = {
@@ -23,3 +23,5 @@ export type Cart = {
   status: CartStatuses;
   items: CartItem[];
 };
+
+export type CardWithoutId = Omit<Cart, 'id'>;
