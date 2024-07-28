@@ -1,23 +1,22 @@
 import {
+  Body,
   Controller,
   Get,
-  Request,
-  Post,
-  UseGuards,
   HttpStatus,
-  Body,
+  Post,
+  Request,
+  UseGuards,
 } from '@nestjs/common';
-import {
-  LocalAuthGuard,
-  AuthService,
-  JwtAuthGuard,
-  BasicAuthGuard,
-} from './auth';
-import { User, UserWithoutId } from './users';
+import { AuthService, BasicAuthGuard } from './auth';
+import { UserWithoutId } from './users';
+import { GetAllService } from './getAll.service';
 
 @Controller()
 export class AppController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private getAllService: GetAllService,
+  ) {}
 
   @Get(['', 'ping'])
   healthCheck(): any {
@@ -41,19 +40,22 @@ export class AppController {
     };
   }
 
-  // @Post('api/auth/register')
-  // async register(@Body() user: UserWithoutId) {
-  //   const newUser = this.authService.validateUser(user.name, user.password);
-  //   const token = this.authService.login(newUser, 'basic');
-  //
-  //   return {
-  //     statusCode: HttpStatus.OK,
-  //     message: 'OK',
-  //     data: {
-  //       ...token,
-  //     },
-  //   };
-  // }
+  @Post('api/auth/register')
+  async register(@Body() user: UserWithoutId) {
+    const newUser = await this.authService.validateUser(
+      user.name,
+      user.password,
+    );
+    const token = this.authService.login(newUser, 'basic');
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'OK',
+      data: {
+        ...token,
+      },
+    };
+  }
 
   @UseGuards(BasicAuthGuard)
   @Get('api/profile')
@@ -65,5 +67,25 @@ export class AppController {
         user: req.user,
       },
     };
+  }
+
+  @Get('all-orders')
+  async getAllOrders() {
+    return await this.getAllService.getAllOrders();
+  }
+
+  @Get('all-carts')
+  async getAllCarts() {
+    return await this.getAllService.getAllCarts();
+  }
+
+  @Get('all-users')
+  async getAllUsers() {
+    return await this.getAllService.getAllUsers();
+  }
+
+  @Get('all-cart-items')
+  async getAllCartItems() {
+    return await this.getAllService.getAllCartItems();
   }
 }

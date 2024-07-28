@@ -8,6 +8,7 @@ import { OrderModule } from './order/order.module';
 import { DbModule } from './db/db.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import ormConfig from './orm.config';
+import { GetAllService } from './getAll.service';
 
 @Module({
   imports: [
@@ -18,6 +19,6 @@ import ormConfig from './orm.config';
     OrderModule,
   ],
   controllers: [AppController],
-  providers: [],
+  providers: [GetAllService],
 })
 export class AppModule {}
