@@ -2,9 +2,9 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -30,7 +30,7 @@ export class Cart {
   @Column({ type: 'enum', enum: CartStatuses, default: CartStatuses.OPEN })
   status: CartStatuses;
 
-  @OneToOne(() => Order, (order) => order.cart)
+  @OneToMany(() => Order, (order) => order.cart)
   order: Order;
 
   @OneToMany(() => CartItem, (item) => item.cart)
@@ -40,5 +40,6 @@ export class Cart {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
+  @JoinColumn({ name: 'user_id' })
   user: User;
 }
