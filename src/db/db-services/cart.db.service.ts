@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cart } from '../../cart/entities/cart.entity';
 import { Repository } from 'typeorm';
-import { CartWithoutId } from '../../cart/models/cart-without-id';
 
 @Injectable()
 export class CartDbService {
@@ -12,23 +11,31 @@ export class CartDbService {
   ) {}
 
   public async findAll() {
-    console.log('db-log');
     return await this.cartRepository.find();
   }
 
   public async findOne(id: string) {
-    return await this.cartRepository.findOneBy({ id });
+    return await this.cartRepository.findOne({
+      where: { user_id: id },
+      relations: ['items'],
+    });
   }
 
-  public async create(cart: CartWithoutId): Promise<Cart> {
-    return await this.cartRepository.save(cart);
+  public async create(userId: string): Promise<Cart> {
+    const cart = new Cart();
+    cart.user_id = userId;
+    return this.cartRepository.save(cart);
   }
 
   public async update(cart: Cart) {
-    return await this.create(cart);
+    return this.cartRepository.save(cart);
   }
 
   public async remove(id: string) {
     return await this.cartRepository.delete(id);
+  }
+
+  public async removeByUserId(id: string) {
+    return await this.cartRepository.delete({ user_id: id });
   }
 }
