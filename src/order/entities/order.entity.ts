@@ -3,7 +3,6 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { OrderStatuses } from '../models';
@@ -15,10 +14,10 @@ export class Order {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ type: 'uuid', name: 'user_id' })
   user_id: string;
 
-  @Column({ unique: true })
+  @Column()
   cart_id: string;
 
   @Column('json')
@@ -38,9 +37,10 @@ export class Order {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
+  @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @OneToOne(() => Cart, (cart) => cart.order, {
+  @ManyToOne(() => Cart, (cart) => cart.order, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
